@@ -1,11 +1,9 @@
 require("dotenv").config();
 const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
-const typeDefs = require("./schema/typeDefs.jsx");
-const resolvers = require("./schema/resolvers.jsx");
-const color =require('colors');
+const typeDefs = require("./schema/typeDefs");
+const resolvers = require("./schema/resolvers");
 
-console.log(color.styles.blue);
 const startServer = async () => {
   const server = new ApolloServer({ typeDefs, resolvers });
 

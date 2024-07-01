@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+
+#All About House Content
   type House {
     id: ID!
     location: String
@@ -13,10 +15,19 @@ const typeDefs = gql`
     numberOfBeds: Int
     images: [String]
   }
+  type Message {
+    id: ID!
+    fullName: String!
+    email: String!
+    description: String!
+    telephone: String!
+  }
 
   type Query {
     getHouses: [House]
     getHouse(id: ID!): House
+    getMessages: [Message]
+    getMessage(id: ID!): Message
   }
 
   type Mutation {
@@ -46,6 +57,22 @@ const typeDefs = gql`
     ): House
 
     deleteHouse(id: ID!): String
+    
+#All about Message
+    addMessage(
+      fullName: String!,
+      email: String!,
+      description: String!,
+      telephone: String!): Message
+
+    updateMessage(
+      id: ID!,
+      fullName: String,
+      email: String,
+      description: String,
+      telephone: String): Message
+
+    deleteMessage(id: ID!): String
   }
 `;
 
