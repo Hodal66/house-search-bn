@@ -1,0 +1,7 @@
+# .gitignore
+
+# Dependency directories
+node_modules
+
+# Other files to ignore
+.env
