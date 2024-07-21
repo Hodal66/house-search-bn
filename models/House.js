@@ -7,10 +7,18 @@ const houseSchema = new mongoose.Schema({
   price: Number,
   size: Number,
   description: String,
-  image: String,
-  link: String,
   numberOfBeds: Number,
-  images: [String]
+  images_url: [
+    {
+      url: String,
+      filename: String,
+    },
+  ],
+  date_created: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 
 const House = mongoose.model('House', houseSchema);
