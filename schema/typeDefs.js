@@ -1,5 +1,4 @@
 const { gql } = require("apollo-server");
-
 const typeDefs = gql`
   # All About House Content Inputs and Types
   input HouseInput {
@@ -10,7 +9,18 @@ const typeDefs = gql`
     description: String
     numberOfBeds: Int!
     images_url: [ImageToBeSaved!]
-    date_created: String!
+    date_created: String
+  }
+
+  input HouseInputUpdate {
+    house_id: ID!
+    location: String
+    status: String
+    price: Int
+    size: Int
+    description: String
+    numberOfBeds: Int
+    images_url: [ImageToBeSaved]
   }
 
   input ImageToBeSaved {
@@ -22,8 +32,8 @@ const typeDefs = gql`
     filename: String
   }
 
-  type houseTobeReturned {
-    id: ID!
+  type HouseTobeReturned {
+    id: ID
     location: String
     status: String
     price: Int
@@ -46,10 +56,10 @@ const typeDefs = gql`
     message: String
   }
   type ContactUsTobeReturned {
-    id: ID!
-    fullName: String!
-    email: String!
-    message: String!
+    id: ID
+    fullName: String
+    email: String
+    message: String
   }
   # All About CMessage Inputs and Types
   input MessageInput {
@@ -94,26 +104,62 @@ const typeDefs = gql`
     token: String!
     tokenExpiration: Int!
   }
+
+  # All My House Inputs and Types
+
+  # input MyHouseInput{
+  #   location:String!
+  #   description:String!
+  # }
+
+  # type MyHouseInputToBeReturned{
+  #   id:ID
+  #   location:String
+  #   description:String
+  # }
+
+  input AddMyHouseInput {
+    location: String!
+    description: String!
+  }
+  input UpdateMyHouseInput {
+    id: ID!
+    location: String
+    description: String
+  }
+  type MyHouseInputTobeReturned {
+    id: ID
+    location: String
+    description: String
+  }
   type Query {
-    getHouses: [houseTobeReturned]
-    getHouse(id: ID!): houseTobeReturned
+    getHouses: [HouseTobeReturned]
+    getHouse(id: ID!): HouseTobeReturned
     getContactUsContent(id: ID!): ContactUsTobeReturned
     getContactUsContents: [ContactUsTobeReturned]
     getMessages: [MessageToBeReturned]
     getMessage(id: ID!): MessageToBeReturned
     signIn(email: String!, password: String!): AuthData
+    getMyHouse(id: ID!): MyHouseInputTobeReturned
+    getMyHouses: [MyHouseInputTobeReturned]
+ 
   }
 
   type Mutation {
     # All Mutation About Houses
-    addHouse(input: HouseInput): houseTobeReturned
-    updateHouse(input: HouseInput): houseTobeReturned
+    addHouse(input: HouseInput): HouseTobeReturned!
+    updateHouse(input: HouseInputUpdate!): HouseTobeReturned
     deleteHouse(id: ID!): String
 
     # Mutation About ContactUs
     addContactUsContent(input: AddContactUsInput): ContactUsTobeReturned
     updateContactUsContent(input: UpdateContactUsInput): ContactUsTobeReturned
     deleteContactUsContent(id: ID!): String
+
+    # Mutation About MyHouse
+    addMyHouse(input: AddMyHouseInput): MyHouseInputTobeReturned
+    updateMyHouse(input: UpdateMyHouseInput): MyHouseInputTobeReturned
+    deleteMyHouse(id: ID!): String
 
     # Mutation About Messages
     addMessage(input: MessageInput): MessageToBeReturned

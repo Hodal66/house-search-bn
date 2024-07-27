@@ -4,6 +4,7 @@ const Message = require("../models/Message");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const MyHouse = require("../models/MyHouse");
 
 const resolvers = {
   Query: {
@@ -42,6 +43,21 @@ const resolvers = {
         throw new Error(
           "Error In Fetching All Information related to Content of Contactus data"
         );
+      }
+    },
+    // All About Query MyHouse Contents
+    getMyHouses: async () => {
+      try {
+        return await MyHouse.find();
+      } catch (error) {
+        throw new Error("My House data are not comming!");
+      }
+    },
+    getMyHouse: async (_, { id }) => {
+      try {
+        return await MyHouse.findById(id);
+      } catch (error) {
+        throw new Error("My House data are not comming!");
       }
     },
 
@@ -87,41 +103,102 @@ const resolvers = {
   },
 
   Mutation: {
-
-    addHouse: async (
-      _,
-      {
+    async addHouse(parent, args, context) {
+      const { input } = args;
+      const {
         location,
         status,
         price,
         size,
         description,
         numberOfBeds,
-        images_url
-      }
-    ) => {
+        images_url,
+      } = input;
+      const houseDataCapturedToBeSaved = {
+        location,
+        status,
+        price,
+        size,
+        description,
+        numberOfBeds,
+        images_url,
+      };
+      //  return await House.create(houseDataCapturedToBeSaved);
       try {
-        const house = new House({
-          location,
-          status,
-          price,
-          size,
-          description,
-          numberOfBeds,
-          images_url
-        });
-        return await house.save();
+        const newHouse = await House.create(houseDataCapturedToBeSaved);
+        console.log("House created:", newHouse);
+        return newHouse;
       } catch (error) {
-        throw new Error("Error adding house");
+        console.error("Error creating house:", error);
+        throw new Error("Error adding house: " + error.message);
       }
     },
-    updateHouse: async (_, { id, ...args }) => {
-      try {
-        return await House.findByIdAndUpdate(id, args, { new: true }); // Find the house by id and update
-      } catch (error) {
-        throw new Error("Error updating house");
-      }
+
+    // addHouse: async (
+    //   _,
+    //   {
+    //     location,
+    //     status,
+    //     price,
+    //     size,
+    //     description,
+    //     numberOfBeds,
+    //     images_url
+    //   }
+    // ) => {
+    //   try {
+    //     const house = new House({
+    //       location,
+    //       status,
+    //       price,
+    //       size,
+    //       description,
+    //       numberOfBeds,
+    //       images_url
+    //     });
+    //     return await house.save();
+    //   } catch (error) {
+    //     throw new Error("Error adding house");
+    //   }
+    // },
+
+    // updateHouse: async (_, { house_id, ...args }) => {
+    //   try {
+    //     return await House.findByIdAndUpdate(house_id, ...args, { new: true }); // Find the house by id and update
+    //   } catch (error) {
+    //     throw new Error("Error updating house");
+    //   }
+    // },
+
+    async updateHouse(parent, args, context) {
+      const { input } = args;
+      const {
+        location,
+        price,
+        size,
+        description,
+        numberOfBeds,
+        images_url,
+        house_id,
+      } = input;
+
+      const houseDatacapturedToBeUpdated = {
+        location,
+        price,
+        size,
+        description,
+        numberOfBeds,
+        images_url,
+      };
+
+      const houseUpdatedData = await House.findByIdAndUpdate(
+        house_id,
+        houseDatacapturedToBeUpdated,
+        { new: true }
+      );
+      return houseUpdatedData;
     },
+
     deleteHouse: async (_, { id }) => {
       try {
         await House.findByIdAndDelete(id);
@@ -130,20 +207,37 @@ const resolvers = {
         throw new Error("Error deleting house");
       }
     },
-    addContactUsContent: async (_, args) => {
+    // addContactUsContent: async (_, args) => {
+    //   try {
+    //     const newContactUsContent = new ContactUs(args);
+    //     return await newContactUsContent.save();
+    //   } catch (error) {
+    //     throw new Error("Error in inserting Contact us Content");
+    //   }
+    // },
+
+    async addContactUsContent(parent, args, context) {
       try {
-        const newContactUsContent = new ContactUs(args);
-        return await newContactUsContent.save();
+        const { input } = args;
+        const { fullName, message, email } = input;
+        const addContactUsContentToBeSaved = { fullName, message, email };
+        return await ContactUs.create(addContactUsContentToBeSaved);
       } catch (error) {
-        throw new Error("Error in inserting Contact us Content");
+        throw new error(
+          "Error in Inserting the information of ContactUs Content"
+        );
       }
     },
-
-    updateContactUsContent: async (_, { id, ...args }) => {
+    async updateContactUsContent(parent, args, context) {
       try {
-        return ContactUs.findByIdAndUpdate(id, args, { new: true });
+        const { input } = args;
+        const { id, fullName, email, message } = input;
+        const ContactUsContentToBeUpdated = { fullName, email, message };
+        return ContactUs.findByIdAndUpdate(id, ContactUsContentToBeUpdated, {
+          new: true,
+        });
       } catch (error) {
-        throw new Errow(
+        throw new error(
           "Error in Updating the information of ContactUs Content"
         );
       }
@@ -153,12 +247,32 @@ const resolvers = {
         ContactUs.findByIdAndDelete(id);
         return `The contet with Id : ${id} have been successfully deleted`;
       } catch (error) {
-        throw new Errow(
+        throw new error(
           "Error in Deleting the information of ContactUs Content"
         );
       }
     },
+    // All About Mutation MyHouse Contents
 
+    async addMyHouse(parent, args, context) {
+      try {
+        const { input } = args;
+        const { location,description} = input;
+        const addMyHouseToBeSaved = { location, description};
+        return await MyHouse.create(addMyHouseToBeSaved);
+      } catch (error) {
+        throw new error("Error in Inserting the information of MyHouse");
+      }
+    },
+
+    deleteMyHouse: async (_, { id }) => {
+      try {
+        await MyHouse.findByIdAndDelete(id);
+        return "My House deleted successfully";
+      } catch (error) {
+        throw new Error("Error deleting house");
+      }
+    },
     // All About Mutation AddMessage Contents
 
     addMessage: async (_, args) => {
