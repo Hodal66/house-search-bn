@@ -1,4 +1,15 @@
 const MyHouse = require("../models/MyHouse");
+// const nodemailer = require("nodemailer");
+
+//configure nodemailer
+
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: "mhthodol@gmail.com",
+//     pass: "Mhthodol@2024%",
+//   },
+// });
 
 const houseResolvers = {
   Query: {
@@ -39,7 +50,7 @@ const houseResolvers = {
       }
     },
   },
-    // All About Query ContactUsContent Contents
+  // All About Query ContactUsContent Contents
 
   Mutation: {
     // All About Mutation MyHouse Contents
@@ -56,6 +67,8 @@ const houseResolvers = {
           numberOfBeds,
           images_url,
           image_cover,
+          user_id,
+          request_id
         } = input;
         const addMyHouseToBeSaved = {
           location,
@@ -66,15 +79,22 @@ const houseResolvers = {
           numberOfBeds,
           images_url,
           image_cover,
+          user_id,
+          request_id
         };
         console.log(addMyHouseToBeSaved);
-        return await MyHouse.create(addMyHouseToBeSaved);
-        
-        //  const myHouse = await MyHouse.create(addMyHouseToBeSaved);
-        //  console.log("My House on Backend Side: ", myHouse);
-        //  return myHouse;
+        const newHouse = await MyHouse.create(addMyHouseToBeSaved);
+        // const mailOptions = {
+        //   from: "mhthodol@gmail.com",
+        //   to: "hodalmuheto@gmail.com",
+        //   subject: "House Selection Confirmation",
+        //   text: `Dear Client,\n\nYou have successfully selected a house located at ${location}. Here are the details:\n\nLocation: ${location}\nPrice: ${price}\nSize: ${size} sq ft\nNumber of Beds: ${numberOfBeds}\n\nThank you for choosing our services.\n\nBest regards,\nYour Company`,
+        // };
+
+        // await transporter.sendMail(mailOptions);
+        return newHouse;
       } catch (error) {
-        throw new error("Error in Inserting the information of MyHouse");
+        throw new Error("Error in Inserting the information of MyHouse");
       }
     },
 
@@ -86,7 +106,7 @@ const houseResolvers = {
         throw new Error("Error deleting house");
       }
     },
-},
+  },
 };
 
 module.exports = houseResolvers;

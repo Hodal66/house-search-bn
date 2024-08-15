@@ -1,12 +1,12 @@
 // scripts/populate.js
 require('dotenv').config();
 const mongoose = require('mongoose');
-const House = require('../models/House');
+const MyHouse = require('../models/MyHouse');
 
 const houseData = [];
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => House.insertMany(houseData))
+  .then(() => MyHouse.insertMany(houseData))
   .then(() => {
     console.log('Data successfully loaded!');
     process.exit();

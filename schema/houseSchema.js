@@ -10,19 +10,12 @@ const houseSchema = gql`
     numberOfBeds: Int!
     image_cover: [ImageToBeSaved!]
     images_url: [ImageToBeSaved!]
+    user_id:[ID]!
+    request_id:[ID]!
   }
-  input UpdateMyHouseInput {
-    id: ID!
-    location: String
-    description: String
-    status: String
-    price: Int
-    size: Int
-    image_cover: String
-    numberOfBeds: Int
-  }
+
   type MyHouseInputTobeReturned {
-    id: ID
+    _id: ID
     location: String
     description: String
     status: String
@@ -31,6 +24,18 @@ const houseSchema = gql`
     numberOfBeds: Int
     image_cover: [ImageToBeSavedReturned!]
     images_url: [ImageToBeSavedReturned!]
+    user_id:[UserToBeReturned!]
+    request_id:[userRequestCreatedPopulated!]
+  }
+  input UpdateMyHouseInput {
+    _id: ID!
+    location: String
+    description: String
+    status: String
+    price: Int
+    size: Int
+    image_cover: String
+    numberOfBeds: Int
   }
   input ImageToBeSaved {
     url: String!

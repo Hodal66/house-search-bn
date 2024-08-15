@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const myHouseSchema = new mongoose.Schema({
+const myRequestedHouseSchema = new mongoose.Schema({
   location: String,
   description: String,
   price:Number,
@@ -18,18 +18,11 @@ const myHouseSchema = new mongoose.Schema({
       filename: String,
     },
   ],
-  user_id: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  request_id: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Request",
-    },
-  ],
+  clientInfo:[{
+    fullName:String,
+    email:String,
+    message:String,
+  }],
 });
 
-module.exports = mongoose.model("MyHouse", myHouseSchema);
+module.exports = mongoose.model("RequestedHouse", myRequestedHouseSchema);

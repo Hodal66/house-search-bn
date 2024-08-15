@@ -8,16 +8,25 @@ const houseSchema = require("./schema/houseSchema");
 const contactUsSchema = require("./schema/contactUsSchema");
 const contactUsResolvers = require("./resolvers/contactUsResolvers");
 const houseResolvers = require("./resolvers/houseResolvers");
+const requestedHouseSchema = require("./schema/requestedHousesSchema");
+const requestHouseResolvers = require("./resolvers/requestHouseResolvers");
+const userRequestResolvers = require("./resolvers/UserRequestResolvers");
+const userRequestSchema = require("./schema/userRequestsScheme");
 
 const resolvers = mergeResolvers([
   contactUsResolvers,
   userResolvers,
   houseResolvers,
+  requestHouseResolvers,
+  userRequestResolvers
 ]);
 const typeDefs = mergeTypeDefs([
-  contactUsSchema, 
-  userSchema, 
-  houseSchema]);
+  contactUsSchema,
+  userSchema,
+  houseSchema,
+  requestedHouseSchema,
+  userRequestSchema
+]);
 
 const startServer = async () => {
   const server = new ApolloServer({ typeDefs, resolvers });

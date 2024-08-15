@@ -14,6 +14,10 @@ const userResolvers = {
       }
     },
 
+  },
+
+  Mutation: {
+    // All About Mutation SignUp Contents
     signIn: async (_, { email, password }) => {
       try {
         const user = await User.findOne({ email });
@@ -34,15 +38,11 @@ const userResolvers = {
         throw new Error("Error signing in: " + error.message);
       }
     },
-  },
-
-  Mutation: {
-    // All About Mutation SignUp Contents
 
     signUp: async (_, args, context) => {
       try {
         const {input} = args;
-        const { fullName, email, telephone, password } = input;
+        const { fullName, email, telephone, password, role} = input;
         console.log("You are trying to insert :" , input);
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -54,6 +54,7 @@ const userResolvers = {
           email,
           telephone,
           password: hashedPassword,
+          role,
           // Add email to the user object
         });
         const result = await user.save();

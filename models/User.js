@@ -18,10 +18,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  houses:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"MyHouse",
+  role: {
+    type: String,
+    required: true,
   },
+  house_id:[
+    {
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"MyHouse",
+    },
+  ]
 });
 
 module.exports = mongoose.model("User", userSchema);

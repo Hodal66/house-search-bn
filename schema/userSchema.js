@@ -6,15 +6,17 @@ const userSchema = gql`
     email: String!
     telephone: String!
     password: String!
+    role: String!
   }
 
   type UserToBeReturned {
-    id: ID
+    _id: ID
     fullName: String
     email: String
     telephone: String
     password: String
-    house:[ID]
+    role: String
+    house_id: [MyHouseInputTobeReturned]
   }
 
   type AuthData {
@@ -23,14 +25,25 @@ const userSchema = gql`
     tokenExpiration: Int!
   }
 
+  type populatedUserData {
+    fullName: String
+    password: String
+    telephone: String
+    email: String
+    role: String
+    _id: ID!
+    house_id: [MyHouseInputTobeReturned]!
+  }
+
   type Query {
-    signIn(email: String!, password: String!): AuthData
-    getAllUsers:[UserToBeReturned]
+    getAllUsers: [UserToBeReturned]
+    getAllUserDetails: [populatedUserData!]
   }
 
   type Mutation {
     # All Mutation About SignUp
     signUp(input: UserInput): UserToBeReturned
+    signIn(email: String!, password: String!): AuthData
     deleteUser(id: ID!): String
   }
 `;
