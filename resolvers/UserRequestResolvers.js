@@ -1,4 +1,5 @@
 const sendEmailProgrammatically = require("../EmailConfuguration");
+const sendSMSProgramatically = require("../EmailConfuguration");
 const UserRequest = require("../models/UserRequest");
 const userRequestResolvers = {
   Query: {
@@ -78,29 +79,39 @@ const userRequestResolvers = {
       })
         .populate({ path: "house_id", select: "price size location" })
         .populate({ path: "user_id", select: "fullName email" });
-      // .populate({ path: "house_id", select: "price size location" })
-      // .populate({ path: "user_id", select: "email" });
 
-      console.log("INSIDE REQUEST POPULATED: DOWN");
+      console.log("INSIDE REQUEST POPULATED: UP");
       console.log(userRequestCreatedAndPopulated);
       console.log("INSIDE REQUEST POPULATED: DOWN");
-      const emailToBeSent = userRequestCreatedAndPopulated.user_id[1];
-
+    
+      // newUserRequestSaved.email,
+      // newUserRequestSaved.fullName,
       sendEmailProgrammatically(
-        newUserRequestSaved.email,
-        newUserRequestSaved.fullName,
+        "mhthodol@gmail.com",
+        "Muheto Hodal",
         "Welcome to the rentHouse!",
-        `We value yourinterest your Email:ytu ${emailToBeSent} in the houses we have, soon we will reach out to you in person!`
+        `We value yourinterest your Email in the houses we have, soon we will reach out to you in person!`
       );
-      // await newUserRequestSaved
-      // .populate({ path: "house_id", select: "price size location" })
-      // .populate({ path: "user_id", select: "fullName email" }).execPopulate();
+      // sendSMSProgramatically("+250782439775");
+
 
       if (newUserRequestSaved) {
         console.log("Data Was Successfully Saved:", newUserRequestSaved);
         return newUserRequestSaved;
       } else {
         console.log("Nooooo Wrong in Saving Data");
+      }
+    },
+
+    deleteUserRequest: async (_, { id }) => {
+      try {
+        const isUserExistToBeDeleted = UserRequest.findById(id);
+        if (isUserExistToBeDeleted) {
+          await UserRequest.findByIdAndDelete(id);
+          return "User Requested deleted successfully";
+        } else return " the User Requested ID Is not valid";
+      } catch (error) {
+        throw new Error("Error deleting house");
       }
     },
   },

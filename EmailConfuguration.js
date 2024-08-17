@@ -1,4 +1,5 @@
 const nodemailer  = require("nodemailer");
+require("dotenv").config();
 const sendEmailProgrammatically = async (
   sendToEmail,
   NameOfTheReceiver,
@@ -31,4 +32,31 @@ const sendEmailProgrammatically = async (
   console.log("Good, It sent!!\nStatus Message: \n" + info.response);
 };
 
+const twilio = require('twilio');
+const accountSid = process.env.SMS_ACCOUNT_ID;
+const authToken = process.env.SMS_AUTH_TOKEN;
+const phoneNumber = process.env.SMS_PHONE_NUMBER;
+const client = new twilio(accountSid, authToken);
+
+const sendSMSProgramatically = (phoneNumberToSendSMS) => {
+client.messages.create({
+    body: 'Hello from Twilio!',
+    to: phoneNumberToSendSMS, // Your phone number
+    from: phoneNumber // Your Twilio number
+})
+.then((message) => {
+    console.log("The message sent successfully")
+    console.log(message.sid)})
+.catch((error) => {
+    console.log("an error occured while sending an sms")
+    console.error(error)});
+}
+
+
+
+
+
 module.exports = sendEmailProgrammatically;
+module.exports = sendSMSProgramatically;
+
+
