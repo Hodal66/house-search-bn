@@ -1,109 +1,118 @@
 const MyHouse = require("../models/MyHouse");
-// const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
-//configure nodemailer
+// Configure nodemailer with Outlook
+const transporter = nodemailer.createTransport({
+  service: "hotmail", // Using "hotmail" for Outlook
+  auth: {
+    user: "hodalmuheto2@outlook.com",
+    pass: "Mhthodol@2024%",
+  },
+});
 
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: "mhthodol@gmail.com",
-//     pass: "Mhthodol@2024%",
-//   },
-// });
+const sendNotificationEmail = async (house) => {
+  const mailOptions = {
+    from: "hodalmuheto2@outlook.com",
+    to: "hodalmuheto@gmail.com",
+    subject: "New House Added to the Listing",
+    text: `A new house has been added to the listing:\n\nLocation: ${house.location}\nPrice: ${house.price}\nStatus: ${house.status}\nDescription: ${house.description}\n\nThank you!`,
+  };
+
+  try {
+    // Send email to the receiver
+    await transporter.sendMail(mailOptions);
+    console.log("Notification email sent to receiver successfully");
+
+    // Send a copy to the sender
+    mailOptions.to = "hodalmuheto2@outlook.com";
+    await transporter.sendMail(mailOptions);
+    console.log("Notification email sent to sender successfully");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
 
 const houseResolvers = {
   Query: {
-    // All About Query MyHouse Contents
-    getMyHouses: async () => {
+    getMyHouses: async (_, { id }) => {
+      console.log("coming from ID in the frontend")
+      console.log(id)
       try {
         return await MyHouse.find();
       } catch (error) {
-        throw new Error("My House data are not comming!");
+        throw new Error("Error fetching houses: " + error.message);
       }
     },
+
     getMyHouse: async (_, { id }) => {
       try {
         return await MyHouse.findById(id);
       } catch (error) {
-        throw new Error("My House data are not comming!");
+        throw new Error("Error fetching house: " + error.message);
       }
     },
+
     getFilteredRentedHouses: async () => {
       try {
         return await MyHouse.find({ status: "rented" });
       } catch (error) {
-        throw new Error("My Rented House data are not coming!");
+        throw new Error("Error fetching rented houses: " + error.message);
       }
     },
+
     getFilteredUnRentedHouses: async () => {
       try {
         return await MyHouse.find({ status: "unRented" });
       } catch (error) {
-        throw new Error("My Rented House data are not coming!");
+        throw new Error("Error fetching unrented houses: " + error.message);
       }
     },
+
     getFilteredPendingHouses: async () => {
       try {
         return await MyHouse.find({ status: "pending" });
       } catch (error) {
-        throw new Error("My pending House data are not coming!");
+        throw new Error("Error fetching pending houses: " + error.message);
+      }
+    },
+
+    getFilteredByOwnerHouses: async (_, __, context) => {
+      try {
+        const filteredHouses = await MyHouse.find({ user_id: context.userId });
+        return filteredHouses;
+      } catch (error) {
+        throw new Error("Error fetching houses by owner: " + error.message);
       }
     },
   },
-  // All About Query ContactUsContent Contents
 
   Mutation: {
-    // All About Mutation MyHouse Contents
-
-    async addMyHouse(parent, args, context) {
+    addMyHouse: async (_, { input }) => {
       try {
-        const { input } = args;
-        const {
-          location,
-          description,
-          price,
-          status,
-          size,
-          numberOfBeds,
-          images_url,
-          image_cover,
-          user_id,
-          request_id
-        } = input;
-        const addMyHouseToBeSaved = {
-          location,
-          description,
-          price,
-          status,
-          size,
-          numberOfBeds,
-          images_url,
-          image_cover,
-          user_id,
-          request_id
-        };
-        console.log(addMyHouseToBeSaved);
-        const newHouse = await MyHouse.create(addMyHouseToBeSaved);
-        // const mailOptions = {
-        //   from: "mhthodol@gmail.com",
-        //   to: "hodalmuheto@gmail.com",
-        //   subject: "House Selection Confirmation",
-        //   text: `Dear Client,\n\nYou have successfully selected a house located at ${location}. Here are the details:\n\nLocation: ${location}\nPrice: ${price}\nSize: ${size} sq ft\nNumber of Beds: ${numberOfBeds}\n\nThank you for choosing our services.\n\nBest regards,\nYour Company`,
-        // };
+        console.log("looking into input coming from fronten to see if user id is coming!!!!")
+        console.log(input.user_id);
+        const newHouse = await MyHouse.create({
+          ...input,
+          status: "unRented", 
+          // user_id:"6702fda6bfe8a2fcf193a973"// Automatically set the status to "unRented"
+          // user_id: ["66c7cdcccb59836130c0047d"],Replace with actual user ID from context
+        });
 
-        // await transporter.sendMail(mailOptions);
+        // Send notification email after successfully adding a new house
+        await sendNotificationEmail(newHouse);
+
         return newHouse;
       } catch (error) {
-        throw new Error("Error in Inserting the information of MyHouse");
+        throw new Error("Error adding house: " + error.message);
       }
     },
 
     deleteMyHouse: async (_, { id }) => {
       try {
         await MyHouse.findByIdAndDelete(id);
-        return "My House deleted successfully";
+        return "House deleted successfully";
       } catch (error) {
-        throw new Error("Error deleting house");
+        throw new Error("Error deleting house: " + error.message);
       }
     },
   },

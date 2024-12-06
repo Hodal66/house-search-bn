@@ -6,7 +6,7 @@ const userSchema = gql`
     email: String!
     telephone: String!
     password: String!
-    role: String!
+    role: String
   }
 
   type UserToBeReturned {
