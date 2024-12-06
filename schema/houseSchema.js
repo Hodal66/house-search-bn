@@ -10,8 +10,8 @@ const houseSchema = gql`
     numberOfBeds: Int!
     image_cover: [ImageToBeSaved!]
     images_url: [ImageToBeSaved!]
-    user_id:[ID]!
-    request_id:[ID]!
+    user_id: String!
+    request_id:[ID]
   }
 
   type MyHouseInputTobeReturned {
@@ -24,8 +24,18 @@ const houseSchema = gql`
     numberOfBeds: Int
     image_cover: [ImageToBeSavedReturned!]
     images_url: [ImageToBeSavedReturned!]
-    user_id:[UserToBeReturned!]
-    request_id:[userRequestCreatedPopulated!]
+    user_id:[UserToBeReturned]
+    request_id:[userRequestCreatedPopulated]
+  }
+  type MyHouseInputTobeReturnedByOwner {
+    _id: ID
+    location: String
+    description: String
+    status: String
+    price: Int
+    size: Int
+    numberOfBeds: Int
+    request_id:[userRequestCreatedPopulated]
   }
   input UpdateMyHouseInput {
     _id: ID!
@@ -48,10 +58,11 @@ const houseSchema = gql`
   # All About ContactUs Content Inputs and Types
   type Query {
     getMyHouse(id: ID!): MyHouseInputTobeReturned
-    getMyHouses: [MyHouseInputTobeReturned]
+    getMyHouses(id: String!): [MyHouseInputTobeReturned]
     getFilteredRentedHouses:[MyHouseInputTobeReturned]
     getFilteredUnRentedHouses:[MyHouseInputTobeReturned]
     getFilteredPendingHouses:[MyHouseInputTobeReturned]
+    getFilteredByOwnerHouses:[MyHouseInputTobeReturnedByOwner]
   }
 
   type Mutation {

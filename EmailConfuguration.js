@@ -39,23 +39,21 @@ const phoneNumber = process.env.SMS_PHONE_NUMBER;
 const client = new twilio(accountSid, authToken);
 
 const sendSMSProgramatically = (phoneNumberToSendSMS) => {
-client.messages.create({
-    body: 'Hello from Twilio!',
-    to: phoneNumberToSendSMS, // Your phone number
-    from: phoneNumber // Your Twilio number
-})
-.then((message) => {
-    console.log("The message sent successfully")
-    console.log(message.sid)})
-.catch((error) => {
-    console.log("an error occured while sending an sms")
-    console.error(error)});
+  client.messages
+    .create({
+      body: "Hello from Twilio!",
+      to: phoneNumberToSendSMS, // Your phone number
+      from: phoneNumber, // Your Twilio number
+    })
+    .then((message) => {
+      console.log("The message sent successfully");
+      console.log(message.sid);
+    })
+    .catch((error) => {
+      console.log("an error occured while sending an sms");
+      console.error(error);
+    });
 }
-
-
-
-
-
 module.exports = sendEmailProgrammatically;
 module.exports = sendSMSProgramatically;
 
